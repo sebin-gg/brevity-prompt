@@ -9,7 +9,7 @@ This guide covers:
 4. ✅ Optional companion (Fireworks) + Ollama
 5. ✅ Troubleshooting
 
-**Repo name:** clone may be `shrinkprompt` or `brevity-prompt`. Always load the directory that contains `manifest.json`.
+**Repo name:** `brevity-prompt`. Always load the directory that contains `manifest.json`.
 
 **Default state:** extension processing is **off** until you enable the popup toggle.
 

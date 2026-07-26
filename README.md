@@ -4,7 +4,7 @@
 
 **AMD Developer Hackathon Act II — Track 3 (Unicorn)** hybrid product: extension + Podman companion. Docker Compose is supported for compatibility. See **[SUBMISSION.md](SUBMISSION.md)** for the judge demo script.
 
-Repo folder may be named `shrinkprompt`; product name is **BrevityPrompt**. Load the folder that contains `manifest.json`.  
+Repo folder name is `brevity-prompt`; product name is **BrevityPrompt**. Load the folder that contains `manifest.json`.  
 **Extension version:** 5.0.0
 
 ---
@@ -68,8 +68,8 @@ Supported target: Chrome and Chromium-based desktop browsers on Windows, macOS, 
 
 1. Get source:
    ```bash
-   git clone https://github.com/sebin-gg/shrinkprompt.git
-   cd shrinkprompt
+   git clone https://github.com/sebin-gg/brevity-prompt.git
+   cd brevity-prompt
    ```
    Or download and extract the repository ZIP.
 2. No build or dependency install is required for unpacked use; this extension is vanilla JavaScript.
@@ -163,7 +163,7 @@ Selectors can break when sites redesign UI — check DevTools console for `[Brev
 ## Project structure
 
 ```
-shrinkprompt/
+brevity-prompt/
 ├── manifest.json                    # v2.0.0, MV3, background type:module
 ├── .env.example
 ├── docker-compose.yml
@@ -184,12 +184,6 @@ shrinkprompt/
 │   ├── sniffer.js             # MAIN-world fetch/XHR observer
 │   ├── dashboard.js           # Shadow DOM token HUD
 │   ├── shortener.js           # Content-script compatibility shim
-│   ├── preview-modal.js       # Comparison modal
-│   ├── popup.*                # Toggle UI
-│   └── settings.*             # Patterns + AI config
-├── tests/test_clean_prompt.mjs  # 25 tests, imports from shared/
-├── icons/
-├── SUBMISSION.md
 ├── INSTALL.md
 ├── QUICKREF.md
 ├── IMPLEMENTATION_SUMMARY.md

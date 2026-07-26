@@ -34,7 +34,7 @@ Use this checklist to verify everything works correctly before using the extensi
 - [ ] Go to `chrome://extensions/`
 - [ ] Enable **Developer mode** (top-right toggle)
 - [ ] Click **Load unpacked**
-- [ ] Select repo root folder (contains `manifest.json`; may be named `shrinkprompt`)
+- [ ] Select repo root folder (contains `manifest.json`; named `brevity-prompt`)
 - [ ] Extension appears in extensions list
 - [ ] Extension appears in toolbar (top-right)
 - [ ] Extension listed; processing still **off** until popup toggle on

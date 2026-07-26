@@ -116,7 +116,17 @@ class BaseChatAdapter {
       return el.value != null ? el.value : '';
     }
     if (el.isContentEditable || el.contentEditable === 'true') {
-      return el.innerText != null ? el.innerText : (el.textContent || '');
+      try {
+        // Clone element to safely sanitize non-prompt system elements (chips, task cards, placeholders)
+        const clone = el.cloneNode(true);
+        const nonPromptElements = clone.querySelectorAll(
+          '[contenteditable="false"], [aria-hidden="true"], .placeholder, [class*="placeholder"], [class*="task-content"], [class*="task-preview"], [class*="task-header"], [class*="task-title"], [class*="task-card"], [class*="task-chip"], [class*="context-chip"], [data-task]'
+        );
+        nonPromptElements.forEach(node => node.remove());
+        return clone.innerText != null ? clone.innerText : (clone.textContent || '');
+      } catch (_) {
+        return el.innerText != null ? el.innerText : (el.textContent || '');
+      }
     }
     return '';
   }
