@@ -2,8 +2,6 @@
 
 **Chrome Manifest V3 extension** that shortens AI prompts on **ChatGPT**, **Claude.ai**, and **Gemini** — local regex fluff removal plus optional semantic compression via a **containerized companion** (Fireworks Gemma) or local Ollama.
 
-**AMD Developer Hackathon Act II — Track 3 (Unicorn)** hybrid product: extension + Podman companion. Docker Compose is supported for compatibility. See **[SUBMISSION.md](SUBMISSION.md)** for the judge demo script.
-
 Repo folder name is `brevity-prompt`; product name is **BrevityPrompt**. Load the folder that contains `manifest.json`.  
 **Extension version:** 5.0.0
 
@@ -30,7 +28,7 @@ Repo folder name is `brevity-prompt`; product name is **BrevityPrompt**. Load th
 
 ## Architecture (hybrid)
 
-Chrome extensions cannot ship as the only deliverable for containerization requirements (e.g. AMD Hackathon Track 3). This project splits:
+BrevityPrompt combines a lightweight browser extension with an optional backend companion service:
 
 ```
 Browser (MV3 extension)                  Container (Podman preferred; Docker-compatible)
@@ -84,7 +82,7 @@ To create the Chrome Web Store upload ZIP (not used for **Load unpacked**):
 sfw pnpm run package:chrome
 ```
 
-Upload `dist/brevityprompt-<version>-chrome.zip` through the Chrome Web Store Developer Dashboard. See [RELEASE.md](RELEASE.md) for submission requirements.
+Upload `dist/brevityprompt-<version>-chrome.zip` through the Chrome Web Store Developer Dashboard.
 
 Icons: `icons/icon-16.png`, `icon-48.png`, `icon-128.png` (regenerate via `generate-icons.sh` if missing). See [INSTALL.md](INSTALL.md).
 
@@ -184,11 +182,7 @@ brevity-prompt/
 │   ├── sniffer.js             # MAIN-world fetch/XHR observer
 │   ├── dashboard.js           # Shadow DOM token HUD
 │   ├── shortener.js           # Content-script compatibility shim
-├── INSTALL.md
-├── QUICKREF.md
-├── IMPLEMENTATION_SUMMARY.md
-├── VERIFICATION.md
-└── README.md
+├── README.md
 ```
 
 ---
@@ -212,23 +206,6 @@ Companion base URL is editable in Settings → AI (must stay on **localhost / 12
 #### Caching & Privacy in the Companion
 The FastAPI companion uses a SQLite database (`cache.db`) in its container filesystem in Write-Ahead Logging (WAL) mode; the supplied Compose file does not mount it as a persistent host volume.
 - **Privacy**: Raw prompts are not stored. The service hashes the prompt using SHA-256 for `prompt_hash` lookup, while its compressed result is cached.
-- **LRU/Eviction Policy**: The database preserves a maximum of `64` entries (configurable via `COMPRESS_CACHE_MAX`) with a `10-minute` expiration TTL (configurable via `COMPRESS_CACHE_TTL_SEC`), automatically evicting oldest/expired records.
-- **Vulnerability Defense**: SQL injection is completely prevented via strict query parameterisation.
-
----
-
-## Troubleshooting
-
-| Symptom | Check |
-|---------|--------|
-| Nothing happens | Popup toggle **Enabled**; reload extension; hard-refresh chat page |
-| No modal on Claude Enter | Reload extension after latest `content.js`; ensure enabled |
-| Shortened text not applied | SPA editor issue — try Edit in Composer then manual send; report site + DOM |
-| Companion ignored | Prompt length < threshold; cloud off; compose down; check `/health` |
-| Upgrade not landing | Semantic path has a 3s deadline; check if Ollama/companion responds faster |
-| Toolbar icon wrong | `action.default_icon` in manifest; icons under `icons/` |
-
-More detail: [INSTALL.md](INSTALL.md), [VERIFICATION.md](VERIFICATION.md).
 
 ---
 
@@ -386,7 +363,7 @@ For complete instructions on inspecting the Service Worker console, content scri
 - **backend:** CORS, hash cache (no raw prompt stored), richer `/health`, max_tokens headroom
 - **settings:** companion URL (localhost-only); AI tab
 - **manifest 1.1.0:** `default_icon`, MAIN sniffer, 127.0.0.1 hosts
-- **docs:** SUBMISSION.md, README/QUICKREF/VERIFICATION/INSTALL sync
+- **docs:** README and documentation sync
 - **tests:** `node tests/test_clean_prompt.mjs`
 
 ### Roadmap (post-hackathon)
