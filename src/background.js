@@ -217,7 +217,7 @@ chrome.runtime.onInstalled.addListener(async () => {
   const storage = await chrome.storage.sync.get(['enabled', 'patterns', 'companionConfig']);
 
   if (!('enabled' in storage)) {
-    await chrome.storage.sync.set({ enabled: false });
+    await chrome.storage.sync.set({ enabled: true });
   }
 
   if (!('patterns' in storage)) {
@@ -291,7 +291,7 @@ const FETCH_TIMEOUT_MS = 3000;
 const SEMANTIC_DEADLINE_MS = 3000;
 
 function isExtensionEnabled(enabledValue) {
-  return enabledValue === true;
+  return enabledValue !== false;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

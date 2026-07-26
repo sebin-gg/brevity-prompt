@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file src/optimizer/pipeline.js
  * @description Semantic Optimizer — Pipeline Orchestrator
  *
@@ -116,8 +116,10 @@ export async function optimizePrompt(rawText, options = {}) {
       };
     }
 
+    const finalOutput = (formatted && formatted.length < current.length) ? formatted : current;
+
     return {
-      optimized:     formatted,
+      optimized:     finalOutput,
       original:      rawText,
       provider:      'semantic-local',
       stagesApplied,

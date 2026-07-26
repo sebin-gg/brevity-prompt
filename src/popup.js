@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadToggleState() {
   try {
     const storage = await chrome.storage.sync.get(['enabled']);
-    // Missing key = off (matches install default and background isExtensionEnabled)
-    const isEnabled = storage.enabled === true;
+    // Missing key = on (matches install default and background isExtensionEnabled)
+    const isEnabled = storage.enabled !== false;
     enableToggle.checked = isEnabled;
     updateToggleText(isEnabled);
   } catch (error) {
