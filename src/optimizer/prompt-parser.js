@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file src/optimizer/prompt-parser.js
  * @description Stage 1 — Prompt Parser
  *
@@ -18,9 +18,11 @@ import { extractCodeBlocks, restoreCodeBlocks } from '../shared/cleaner-rules.js
 
 /** Matches URLs (http/https/ftp). */
 const URL_RE = /https?:\/\/[^\s"')\]>]+|ftp:\/\/[^\s"')\]>]+/gi;
+const URL_TEST_RE = /https?:\/\/[^\s"')\]>]+|ftp:\/\/[^\s"')\]>]+/i;
 
 /** Matches POSIX / Windows file paths. */
 const PATH_RE = /(?:\/[\w./-]+|[A-Za-z]:\\[\w\\. -]+|\.{1,2}\/[\w./-]+)/g;
+const PATH_TEST_RE = /(?:\/[\w./-]+|[A-Za-z]:\\[\w\\. -]+|\.{1,2}\/[\w./-]+)/i;
 
 /** Matches semantic version strings like v1.2.3, 3.11.0, >=2.0. */
 const VERSION_RE = /(?:v?\d+\.\d+(?:\.\d+)?(?:-[\w.]+)?|>=?\s*\d+(?:\.\d+)*)/gi;
@@ -177,13 +179,10 @@ export function parsePrompt(rawText) {
   //         can confirm they survive formatting.
   const proseEntities = extractEntities(prose);
   proseEntities.forEach(e => {
-    if (URL_RE.test(e) || PATH_RE.test(e)) {
+    if (URL_TEST_RE.test(e) || PATH_TEST_RE.test(e)) {
       if (!parsed.references.includes(e)) parsed.references.push(e);
     }
   });
-  // Reset regex lastIndex (global flag side-effect)
-  URL_RE.lastIndex = 0;
-  PATH_RE.lastIndex = 0;
 
   return parsed;
 }

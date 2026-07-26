@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file src/optimizer/formatter.js
  * @description Stage 4 — Formatter
  *
@@ -63,6 +63,27 @@ function section(heading, value) {
  * @returns {string} Valid, trimmed Markdown string ready to send to the LLM
  */
 export function formatToMarkdown(parsed) {
+  const hasStructuredLists = (parsed.requirements && parsed.requirements.length > 0) ||
+                             (parsed.constraints && parsed.constraints.length > 0) ||
+                             (parsed.examples && parsed.examples.length > 0);
+
+  const populatedSections = [
+    parsed.goal,
+    parsed.context,
+    hasStructuredLists ? 'structured' : null,
+    parsed.outputFormat,
+    (parsed.unclassified || []).filter(p => p.trim()).length > 0 ? 'notes' : null
+  ].filter(Boolean);
+
+  // If simple single-section prompt without structured lists, return plain prose directly
+  if (!hasStructuredLists && populatedSections.length <= 1) {
+    let plain = (parsed.goal || parsed.context || (parsed.unclassified || []).join('\n\n') || parsed.prose || '').trim();
+    if (parsed.codeBlocks && parsed.codeBlocks.length > 0) {
+      plain = restoreCodeBlocks(plain, parsed.codeBlocks);
+    }
+    return plain;
+  }
+
   let md = '';
 
   // H1 — Primary task

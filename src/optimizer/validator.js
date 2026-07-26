@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file src/optimizer/validator.js
  * @description Stage 5 — Validation Pass
  *
@@ -137,8 +137,8 @@ export function validateOutput(optimizedText, parsed) {
 
   // 7. Numeric values (2+ digit numbers that appear in the original prose,
   //    excluding those already inside code blocks)
-  const proseToCHeck = parsed.raw;
-  const originalNums = matchAll(proseToCHeck, NUMERIC_RE);
+  const proseToCheck = parsed.raw;
+  const originalNums = matchAll(proseToCheck, NUMERIC_RE);
   for (const num of originalNums) {
     if (!out.includes(num)) {
       violations.push(`Numeric value missing: ${num}`);
