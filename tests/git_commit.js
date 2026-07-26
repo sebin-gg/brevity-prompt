@@ -75,7 +75,7 @@ async function run() {
         fs,
         dir,
         remote: 'origin',
-        url: 'https://github.com/sebin-gg/shrinkprompt.git'
+        url: 'https://github.com/sebin-gg/brevity-prompt.git'
       });
     } catch (e) {
       // Remote might already exist

@@ -20,8 +20,8 @@ Requirements: Chrome or Chromium, Node.js with pnpm, and Python 3.12 for
 Companion work. Podman Compose is preferred; Docker Compose is compatible.
 
 ```bash
-git clone https://github.com/sebin-gg/shrinkprompt.git
-cd shrinkprompt
+git clone https://github.com/sebin-gg/brevity-prompt.git
+cd brevity-prompt
 sfw pnpm install
 ```
 

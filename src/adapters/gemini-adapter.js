@@ -42,6 +42,8 @@ class GeminiAdapter extends BaseChatAdapter {
       // Most reliable: the contenteditable inside the custom <rich-textarea> element
       'rich-textarea [contenteditable="true"]',
       'rich-textarea div[contenteditable]',
+      'rich-textarea div.ql-editor',
+      'div.ql-editor[contenteditable="true"]',
       // Direct contenteditable with an aria-label (layout variants)
       'div[contenteditable="true"][aria-label]',
       // Role textbox with aria-label

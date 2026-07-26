@@ -119,7 +119,7 @@ curl -s -X POST http://localhost:8000/v1/compress -H "Content-Type: application/
 
 ## Team notes
 
-- Repo folder may be named `shrinkprompt`; product name is **BrevityPrompt**  
+- Repo folder is named `brevity-prompt`; product name is **BrevityPrompt**  
 - Icons are under `icons/` (16 / 48 / 128)  
 - Toggle defaults **off** until user enables  
 

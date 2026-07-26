@@ -2,7 +2,7 @@
 
 ## File Structure
 ```
-shrinkprompt/                  # product name: BrevityPrompt
+brevity-prompt/                  # product name: BrevityPrompt
 ├── manifest.json              ← MV3 metadata + host_permissions
 ├── README.md                  ← Full documentation
 ├── INSTALL.md                 ← Installation guide (START HERE)
