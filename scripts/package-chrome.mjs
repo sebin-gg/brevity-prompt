@@ -25,7 +25,7 @@ if (packagedManifest.manifest_version !== 3 || !packagedManifest.version) {
 const powershell = 'Compress-Archive';
 execFileSync('powershell.exe', [
   '-NoProfile', '-Command',
-  `${powershell} -Path '${releaseDir.replace(/'/g, "''")}\\*' -DestinationPath '${archive.replace(/'/g, "''")}' -Force`
+  `${powershell} -Path '${releaseDir.replace(/'/g, "''")}\\*' -DestinationPath '${archive.replaceAll("'", "''")}' -Force`
 ], { stdio: 'inherit' });
 
 const hash = createHash('sha256').update(await readFile(archive)).digest('hex');

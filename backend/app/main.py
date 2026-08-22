@@ -205,7 +205,7 @@ async def root() -> dict[str, str]:
     }
 
 
-@app.post("/v1/compress", response_model=CompressionResponse)
+@app.post("/v1/compress", responses={502: {"description": "Fireworks compression failed"}})
 async def compress(request: CompressionRequest) -> CompressionResponse:
     raw = request.prompt
     stripped = raw.strip()
