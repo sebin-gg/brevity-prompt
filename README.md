@@ -412,3 +412,19 @@ testing, privacy, and pull-request requirements.
 ---
 
 **Local-first by default. Cloud only when you opt in.**
+
+---
+
+## 📐 System Architecture
+
+`brevity-prompt` operates 100% client-side with zero telemetry to guarantee privacy while reducing LLM token overhead:
+
+```mermaid
+graph LR
+    Input[Prompt Textarea] --> Intercept[Host Adapter]
+    Intercept --> Guard[Code & Syntax Shield]
+    Guard --> Compress[Semantic Compression Engine]
+    Compress --> Inject[DOM Injector / Sync]
+```
+
+Detailed technical specs, ADRs, and pipeline design documented in [ARCHITECTURE.md](./ARCHITECTURE.md).
