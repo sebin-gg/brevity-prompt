@@ -178,6 +178,7 @@ const BrevityDashboard = (function () {
 
   function onWindowMessage(event) {
     if (event.source !== window) return;
+    if (event.origin !== window.location.origin) return;
     const data = event.data;
     if (!data || data.source !== SOURCE_SNIFFER) return;
     if (data.type === 'chat-request') {
@@ -203,7 +204,7 @@ const BrevityDashboard = (function () {
       host.style.display = host.style.display === 'none' ? '' : 'none';
     } else if (e.code === 'KeyK') {
       e.preventDefault();
-      window.postMessage({ source: 'brevity-content', type: 'abort-active' }, '*');
+      window.postMessage({ source: 'brevity-content', type: 'abort-active' }, window.location.origin);
     }
   }
 

@@ -4,9 +4,7 @@
 import {
   DEFAULT_PATTERNS,
   DEFAULT_COMPANION_CONFIG,
-  DEFAULT_STATS,
-  extractCodeBlocks,
-  restoreCodeBlocks
+  DEFAULT_STATS
 } from './shared/cleaner-rules.js';
 
 import { optimizePrompt } from './optimizer/pipeline.js';
