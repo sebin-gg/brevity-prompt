@@ -11,6 +11,6 @@
   },
   "private": true,
   "dependencies": {
-    "isomorphic-git": "^1.41.5"
+    "isomorphic-git": "^1.41.8"
   }
 }
