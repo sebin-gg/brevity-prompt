@@ -1,9 +1,37 @@
 # BrevityPrompt
 
-**Chrome Manifest V3 extension** that shortens AI prompts on **ChatGPT**, **Claude.ai**, and **Gemini** — local regex fluff removal plus optional semantic compression via a **containerized companion** (Fireworks Gemma) or local Ollama.
+**Chrome Manifest V3 extension** that shortens AI prompts on **ChatGPT**, **Claude.ai**, and **Gemini** using local regex fluff removal plus optional semantic compression through a **containerized companion** (Fireworks Gemma) or local Ollama.
 
 Repo folder name is `brevity-prompt`; product name is **BrevityPrompt**. Load the folder that contains `manifest.json`.  
 **Extension version:** 5.0.0
+
+---
+
+## Quick start (extension)
+
+Supported target: Chrome and Chromium-based desktop browsers on Windows, macOS, and Linux. Chrome Android does not support normal extension-store installs.
+
+1. Get source:
+   ```bash
+   git clone https://github.com/sebin-gg/brevity-prompt.git
+   cd brevity-prompt
+   ```
+   Or download and extract the repository ZIP.
+2. No build or dependency install is required for unpacked use; this extension is vanilla JavaScript.
+3. Open Chrome → `chrome://extensions/` → enable **Developer mode** → select **Load unpacked**.
+4. Select this repository root (the folder containing `manifest.json`), not its parent.
+5. Pin **BrevityPrompt** → open the popup → turn **Enabled** on.
+6. Open ChatGPT, Claude, or Gemini → type a prompt → press Enter or Send → choose from the preview modal.
+
+To create the Chrome Web Store upload ZIP (not used for **Load unpacked**):
+
+```powershell
+sfw pnpm run package:chrome
+```
+
+Upload `dist/brevityprompt-<version>-chrome.zip` through the Chrome Web Store Developer Dashboard.
+
+Icons: `icons/icon-16.png`, `icon-48.png`, `icon-128.png` (regenerate via `generate-icons.sh` if missing). See [INSTALL.md](INSTALL.md).
 
 ---
 
@@ -57,34 +85,6 @@ composer updated → site Send
 | Stats | Aggregates only (counts/chars/token estimates) in `chrome.storage.local` |
 
 Patterns and toggle live in `chrome.storage.sync`. Do not treat Fireworks-enabled mode as offline.
-
----
-
-## Quick start — extension
-
-Supported target: Chrome and Chromium-based desktop browsers on Windows, macOS, and Linux. Chrome Android does not support normal extension-store installs.
-
-1. Get source:
-   ```bash
-   git clone https://github.com/sebin-gg/brevity-prompt.git
-   cd brevity-prompt
-   ```
-   Or download and extract the repository ZIP.
-2. No build or dependency install is required for unpacked use; this extension is vanilla JavaScript.
-3. Open Chrome → `chrome://extensions/` → enable **Developer mode** → select **Load unpacked**.
-4. Select this repository root—the folder containing `manifest.json`, not its parent.
-5. Pin **BrevityPrompt** → open the popup → turn **Enabled** on.
-6. Open ChatGPT, Claude, or Gemini → type a prompt → press Enter or Send → choose from the preview modal.
-
-To create the Chrome Web Store upload ZIP (not used for **Load unpacked**):
-
-```powershell
-sfw pnpm run package:chrome
-```
-
-Upload `dist/brevityprompt-<version>-chrome.zip` through the Chrome Web Store Developer Dashboard.
-
-Icons: `icons/icon-16.png`, `icon-48.png`, `icon-128.png` (regenerate via `generate-icons.sh` if missing). See [INSTALL.md](INSTALL.md).
 
 ---
 
@@ -154,7 +154,7 @@ If Ollama fails, extension tries companion (if cloud compression on), else local
 | claude.ai | Enter in composer submits (`enterSubmitsInTextarea: true`) |
 | gemini.google.com | Same Enter behavior as Claude |
 
-Selectors can break when sites redesign UI — check DevTools console for `[BrevityPrompt]` logs.
+Selectors can break when sites redesign their UI. Check the DevTools console for `[BrevityPrompt]` logs.
 
 ---
 
@@ -162,27 +162,42 @@ Selectors can break when sites redesign UI — check DevTools console for `[Brev
 
 ```
 brevity-prompt/
-├── manifest.json                    # v2.0.0, MV3, background type:module
+├── manifest.json                    # v5.0.0, MV3, background type:module
 ├── .env.example
 ├── docker-compose.yml
 ├── backend/
 │   ├── Dockerfile
 │   ├── requirements.txt
-│   └── app/main.py              # FastAPI /health, /v1/compress
+│   ├── app/main.py              # FastAPI /health, /v1/compress
+│   └── tests/                   # Python unit tests (unittest)
 ├── src/
-│   ├── adapters/                # ★ Phase 2: Adapter Pattern
+│   ├── adapters/                # Adapter Pattern (Phase 2)
 │   │   ├── base-chat-adapter.js # Abstract base — contract + shared write logic
 │   │   ├── chatgpt-adapter.js   # ChatGPT (Lexical/React contenteditable)
 │   │   ├── claude-adapter.js    # Claude.ai (ProseMirror)
 │   │   └── gemini-adapter.js    # Google Gemini (Angular rich-textarea)
+│   ├── optimizer/               # Five-stage structural optimization
+│   │   ├── prompt-parser.js
+│   │   ├── semantic-analyzer.js
+│   │   ├── redundancy-optimizer.js
+│   │   ├── formatter.js
+│   │   ├── validator.js
+│   │   └── pipeline.js          # Stage orchestration
 │   ├── shared/
-│   │   └── cleaner-rules.js     # ★ Phase 1: single source of truth for regex
-│   ├── content.js             # Pure orchestrator — zero platform-specific code
+│   │   ├── cleaner-rules.js     # Single source of truth for regex (Phase 1)
+│   │   └── markdown-formatter.js
 │   ├── background.js          # Service worker — imports from shared/
+│   ├── content.js             # Pure orchestrator — zero platform-specific code
+│   ├── preview-modal.js       # Original vs shortened choice UI
 │   ├── sniffer.js             # MAIN-world fetch/XHR observer
 │   ├── dashboard.js           # Shadow DOM token HUD
 │   ├── shortener.js           # Content-script compatibility shim
-├── README.md
+│   ├── popup.html / popup.js  # Popup UI
+│   └── settings.html / settings.js  # Options page
+├── scripts/
+│   └── package-chrome.mjs     # pnpm run package:chrome
+├── tests/                     # Node test suites run by pnpm test
+└── README.md
 ```
 
 ---
@@ -203,15 +218,13 @@ Settings → **AI**:
 
 Companion base URL is editable in Settings → AI (must stay on **localhost / 127.0.0.1** so it matches `host_permissions` in `manifest.json`). Non-local hosts need a manifest change + reload.
 
-#### Caching & Privacy in the Companion
+#### Caching and privacy in the companion
 The FastAPI companion uses a SQLite database (`cache.db`) in its container filesystem in Write-Ahead Logging (WAL) mode; the supplied Compose file does not mount it as a persistent host volume.
 - **Privacy**: Raw prompts are not stored. The service hashes the prompt using SHA-256 for `prompt_hash` lookup, while its compressed result is cached.
 
 ---
 
----
-
-## Adapter Pattern — Platform Interception Engine
+## Adapter Pattern: platform interception engine
 
 Since Phase 2, BrevityPrompt uses an **Adapter Pattern** to separate platform-specific
 DOM behaviour from the universal interception logic.
@@ -233,7 +246,7 @@ content.js  (pure orchestrator)
   Guards: isIntercepting flag + bypassCount counter
 ```
 
-### SPA-Safe `writeText` Strategy
+### SPA-safe `writeText` strategy
 
 | Attempt | Method | Target |
 |---------|--------|--------|
@@ -241,7 +254,7 @@ content.js  (pure orchestrator)
 | 2 | DOM clear + `createTextNode` + `beforeinput`/`input`/`change` events | React 18 |
 | Fallback | `el.textContent = text` | Plain contenteditable |
 
-### Adding a New Platform (6 steps)
+### Adding a new platform (6 steps)
 
 1. Create `src/adapters/my-platform-adapter.js`
 2. Implement `locateComposer()` using 3 layers: CSS selectors → ARIA scan → heuristic
@@ -254,32 +267,30 @@ No changes to `BaseChatAdapter`, `content.js`, or any other existing file.
 
 ---
 
----
-
-## Tokenizer & Network Telemetry Engine
+## Tokenizer and network telemetry engine
 
 Since Phase 3, BrevityPrompt integrates a dual-mode local tokenizer and a deterministic network telemetry engine inside the MV3 service worker.
 
 ### BrevityTokenizer (cl100k_base alignment)
 
-- **WASM Mode**: Auto-detects and loads `wasm/tiktoken_bg.wasm` on extension initialization. Compiles directly within the service worker sandbox.
-- **Calibrated BPE Fallback**: If the WASM binary is not bundled, the engine degrades gracefully to a highly calibrated JavaScript BPE regex estimator.
+- **WASM mode**: Auto-detects and loads `wasm/tiktoken_bg.wasm` on extension initialization. Compiles directly within the service worker sandbox.
+- **Calibrated BPE fallback**: If the WASM binary is not bundled, the engine degrades gracefully to a highly calibrated JavaScript BPE regex estimator.
 - **Accuracy**: The BPE regex splits on cl100k_base GPT-4 boundaries (contractions, whitespace-prefixed words, numeric sequences, symbols) with an error margin of ≤12% on standard prompts (vs. 30–200% for traditional `char.length / 4` heuristics).
 
-### Network Telemetry (webRequest API)
+### Network telemetry (`webRequest` API)
 
 In Manifest V3, request bodies cannot be modified or read asynchronously from background service workers. Telemetry is split into two complementary tracks:
-1. **Autoritative Telemetry (Service Worker)**: `chrome.webRequest.onCompleted` intercepts and counts API calls, recording success/failure counts and latency per domain to `chrome.storage.local`.
-2. **Dashboard UI Telemetry (MAIN world sniffer)**: `sniffer.js` intercepts client-side payload bodies to estimate token usage in real-time, feeding the Shadow DOM token HUD.
+1. **Authoritative telemetry (service worker)**: `chrome.webRequest.onCompleted` intercepts and counts API calls, recording success/failure counts and latency per domain to `chrome.storage.local`.
+2. **Dashboard UI telemetry (MAIN world sniffer)**: `sniffer.js` intercepts client-side payload bodies to estimate token usage in real-time, feeding the Shadow DOM token HUD.
 
 ---
 
-## Development & Testing Harness
+## Development and testing harness
 
 BrevityPrompt includes a local browser launch and watch script to speed up development cycles.
 
-- **Cross-Platform Launcher**: Boots an isolated Chrome developer instance with the unpacked extension loaded, opening chat sites automatically.
-- **Directory Watcher**: Monitors `src/` files and alerts in the terminal when modifications are saved.
+- **Cross-platform launcher**: Boots an isolated Chrome developer instance with the unpacked extension loaded, opening chat sites automatically.
+- **Directory watcher**: Monitors `src/` files and alerts in the terminal when modifications are saved.
 
 To launch the development browser sandbox:
 ```bash
@@ -374,7 +385,7 @@ For complete instructions on inspecting the Service Worker console, content scri
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE).
+Apache License 2.0; see [LICENSE](LICENSE).
 
 ## Code of Conduct
 
@@ -401,9 +412,9 @@ testing, privacy, and pull-request requirements.
 
 ---
 
-## Known Issues & What Needs Fixing
+## Known issues and what needs fixing
 
-1. **Fragile DOM Selectors:** ChatGPT, Claude, and Gemini periodically update their site DOM. If selectors in `src/content.js` change, interception breaks.
+1. **Fragile DOM Selectors:** ChatGPT, Claude, and Gemini periodically update their site DOM. If selectors in `src/adapters/` stop matching, interception breaks.
 2. **SPA Text Insertion Quirks:** SPAs using Draft.js or ProseMirror sometimes fail to sync programmatically updated text unless specific input events are fired.
 3. **Non-localhost AI Endpoints:** Setting a remote (non-localhost) endpoint for the companion or Ollama fails because of strict host permissions in `manifest.json`.
 4. **Timeout Latency:** If the remote companion or Ollama server is slow, the 3-second semantic deadline may expire before a result arrives, so only the local regex result is shown. The modal still appears instantly.
@@ -415,9 +426,9 @@ testing, privacy, and pull-request requirements.
 
 ---
 
-## 📐 System Architecture
+## System architecture
 
-`brevity-prompt` operates 100% client-side with zero telemetry to guarantee privacy while reducing LLM token overhead:
+BrevityPrompt runs locally by default with no external telemetry; prompts leave the browser only if you opt in to remote compression:
 
 ```mermaid
 graph LR
@@ -429,11 +440,11 @@ graph LR
 
 Detailed technical specs, ADRs, and pipeline design documented in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-## 🔒 Security
+## Security
 
 This repository uses [gitleaks](https://github.com/gitleaks/gitleaks) for automatic secret scanning on every commit.
 
-### Pre-commit Hook
+### Pre-commit hook
 
 A pre-commit hook is configured to scan for secrets before each commit. This helps prevent accidentally committing sensitive information like:
 - API keys
@@ -453,7 +464,7 @@ pip install pre-commit
 pre-commit install
 ```
 
-### Bypass (Emergency Only)
+### Bypass (emergency only)
 
 In case of emergency, you can bypass the hook:
 
