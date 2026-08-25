@@ -3,85 +3,23 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      dependencies:
+        patterns: ["*"]
     labels:
       - "dependencies"
-    commit-message:
-      prefix: "chore(deps)"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns: ["*"]
     labels:
       - "dependencies"
-
-  - package-ecosystem: docker
-    directory: /backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: pip
-    directory: /backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: docker
-    directory: /wt-checkout/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: pip
-    directory: /wt-checkout/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: npm
-    directory: /wt-checkout
-    schedule:
-      interval: daily
-
-  - package-ecosystem: docker
-    directory: /wt-iso/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: pip
-    directory: /wt-iso/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: npm
-    directory: /wt-iso
-    schedule:
-      interval: daily
-
-  - package-ecosystem: docker
-    directory: /wt-pnmp/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: pip
-    directory: /wt-pnmp/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: npm
-    directory: /wt-pnmp
-    schedule:
-      interval: daily
-
-  - package-ecosystem: docker
-    directory: /wt-setupnode/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: pip
-    directory: /wt-setupnode/backend
-    schedule:
-      interval: daily
-
-  - package-ecosystem: npm
-    directory: /wt-setupnode
-    schedule:
-      interval: daily
