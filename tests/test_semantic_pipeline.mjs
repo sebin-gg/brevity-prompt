@@ -317,14 +317,25 @@ Review the API documentation at https://api.example.com/v2/docs and implement
 the POST /users endpoint. The webhook callback URL is https://myapp.io/hooks/user-created.
 `.trim();
 
+const containsExactUrl = (text, expected) => {
+  const tokens = text.split(/\s+/).map(t => t.replace(/[.,;:!?)\]]+$/, ''));
+  return tokens.some(t => {
+    try {
+      return new URL(t).href === expected;
+    } catch {
+      return false;
+    }
+  });
+};
+
 await assertAsync('first URL preserved', async () => {
   const r = await optimizePrompt(URL_PROMPT);
-  return r.optimized.includes('https://api.example.com/v2/docs');
+  return containsExactUrl(r.optimized, 'https://api.example.com/v2/docs');
 });
 
 await assertAsync('second URL preserved', async () => {
   const r = await optimizePrompt(URL_PROMPT);
-  return r.optimized.includes('https://myapp.io/hooks/user-created');
+  return containsExactUrl(r.optimized, 'https://myapp.io/hooks/user-created');
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
