@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
       day: "monday"
     open-pull-requests-limit: 5
     groups:
@@ -15,7 +15,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
       day: "monday"
     open-pull-requests-limit: 5
     groups:
@@ -23,3 +23,13 @@ updates:
         patterns: ["*"]
     labels:
       - "dependencies"
+
+  - package-ecosystem: docker
+    directory: /backend
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: daily
