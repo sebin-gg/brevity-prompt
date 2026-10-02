@@ -2,7 +2,7 @@
 
 **Chrome Manifest V3 extension** that shortens AI prompts on **ChatGPT**, **Claude.ai**, and **Gemini** using local regex fluff removal plus optional semantic compression through a **containerized companion** (Fireworks Gemma) or local Ollama.
 
-Repo folder name is `brevity-prompt`; product name is **BrevityPrompt**. Load the folder that contains `manifest.json`.  
+Repo folder name is `brevity-prompt`; By [Sebin Mathew](https://sebin-gg.vercel.app). product name is **BrevityPrompt**. Load the folder that contains `manifest.json`.  
 **Extension version:** 5.0.0
 
 ---
