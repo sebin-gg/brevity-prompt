@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       isomorphic-git:
-        specifier: ^1.44.2
-        version: 1.44.2
+        specifier: ^1.44.4
+        version: 1.44.4
 
 packages:
 
@@ -141,8 +141,8 @@ packages:
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
 
-  isomorphic-git@1.44.2:
-    resolution: {integrity: sha512-RORfhiNxaHRkGXvTiIW1SU6ngH/jW7UnKndvIToGxrGja7s317CUcZ5chENyinnyCPz7Z4vAefA75Ty1Zsyc8w==}
+  isomorphic-git@1.44.4:
+    resolution: {integrity: sha512-uvbZ3b3Vi23O886dBnbreAmkdnttkMtjx6AATrE7MXJaxQg3wd91S81zFPewMk82+U+WvkrB5GjMgDmVO9ieEw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -342,7 +342,7 @@ snapshots:
 
   isarray@2.0.5: {}
 
-  isomorphic-git@1.44.2:
+  isomorphic-git@1.44.4:
     dependencies:
       async-lock: 1.4.1
       clean-git-ref: 2.0.1
